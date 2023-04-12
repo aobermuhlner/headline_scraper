@@ -4,10 +4,11 @@ from bs4 import BeautifulSoup
 
 class NewsScraper:
 
-    def __init__(self, url, html_tags):
+    def __init__(self, url: str, html_tags: list):
         self.url = url
         self.html_tags = html_tags
         self.headline_list = []
+
     def scraper(self):
         data = urllib.request.urlopen(self.url).read()
         soup = BeautifulSoup(data, "html.parser")

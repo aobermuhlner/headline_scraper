@@ -14,7 +14,7 @@ nlp_en = spacy.load('en_core_web_sm')
 
 
 class HeadlineAnalyser:
-    def __init__(self, headlines):
+    def __init__(self, headlines: list):
         self.headlines = headlines
         self.topics = ["Politics", "Business", "Sports", "Culture", "Science",
                        "Technology", "Health", "Lifestyle"]
@@ -44,9 +44,7 @@ class HeadlineAnalyser:
             data_dict[i] = len(data[i])
 
         df = pd.DataFrame(list(data_dict.items()), columns=['Kategorie', 'Anzahl der Schlagzeilen'])
-        print(df.head())
 
-        ax = plt.subplot()
         ax = df.plot(kind='bar', x='Kategorie', y='Anzahl der Schlagzeilen', legend=False)
         ax.set_ylabel('Anzahl der Schlagzeilen')
         plt.xticks(rotation=45)
@@ -62,8 +60,8 @@ if __name__ == "__main__":
 
     analyser = HeadlineAnalyser(test_headlines)
 
-    #test_data = analyser.get_categorized_headlines()
-    
+    test_data = analyser.get_categorized_headlines()
+
     analyser.get_visualization()
 
 '''
