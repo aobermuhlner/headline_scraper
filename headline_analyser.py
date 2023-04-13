@@ -86,7 +86,6 @@ class HeadlineAnalyser:
 if __name__ == "__main__":
 
     test_scraper = scraper.NewsScraper(['h2', 'h3'])
-    test_scraper.clear_cache()
     test_headlines = test_scraper.scraper()
     analyser = HeadlineAnalyser(test_headlines)
     analyser.get_visualization()
