@@ -1,6 +1,8 @@
 import urllib.request
 from bs4 import BeautifulSoup
 
+# pip install bs4
+
 
 class NewsScraper:
 
@@ -15,14 +17,15 @@ class NewsScraper:
         headlines = soup.find_all(self.html_tags)
 
         for i in headlines:
-            self.headline_list.append(i.text.strip())
+            headline_text = i.text.strip()
+            if len(headline_text.split()) > 1:
+                self.headline_list.append(headline_text)
 
         return self.headline_list
 
 
 if __name__ == "__main__":
 
-    headlines = NewsScraper('https://www.nytimes.com', ['h3']).scraper()
-
+    headlines = NewsScraper('https://www.bbc.com', ['h3']).scraper()
     for i in headlines:
         print(i)
