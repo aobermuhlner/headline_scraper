@@ -4,8 +4,6 @@ import json
 import datetime as dt
 import re
 
-# pip install bs4
-
 
 class NewsScraper:
 

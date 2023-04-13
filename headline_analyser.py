@@ -6,10 +6,6 @@ import matplotlib.pyplot as plt
 from collections import Counter
 from textblob import TextBlob
 
-# pip install spacy
-# pip install textblob
-# python -m spacy download en_core_web_sm
-
 
 class HeadlineAnalyser:
     def __init__(self, headlines: list):
