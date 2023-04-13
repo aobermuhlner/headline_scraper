@@ -15,15 +15,16 @@ class HeadlineAnalyser:
     def __init__(self, headlines: list):
         self.headlines = headlines
         self.nlp_en = spacy.load('en_core_web_sm')
-        self.topics = ["Politics", "Business", "Sports", "Culture", "Science",
-                       "Technology", "Health", "Lifestyle"]
+        self.topics = ["Politics", "Business", "Sports", "Culture", "Science", "Tech", "Health", "Lifestyle"]
 
-    def get_most_common_nouns(self, n=10):
-        nouns = Counter()
+    def get_most_common_persons(self, n=10):
+        persons = Counter()
         for text in self.headlines:
             doc = self.nlp_en(text)
-            nouns.update([token.text.lower() for token in doc if token.pos_ == 'NOUN'])
-        return nouns.most_common(n)
+            person_names = [ent.text.lower() for ent in doc.ents if ent.label_ == 'PERSON']
+            full_names = [name.replace("'s", "").title() for name in person_names if len(name.split()) == 2]
+            persons.update(full_names)
+        return persons.most_common(n)
 
     def get_categorized_headlines(self):
         categorized_headlines = {topic: [] for topic in self.topics}
@@ -47,33 +48,37 @@ class HeadlineAnalyser:
         return topic_sentiments
 
     def get_visualization(self):
-        most_common_nouns = self.get_most_common_nouns()
+        most_common_names = self.get_most_common_persons()
         categorized_headlines = self.get_categorized_headlines()
         topic_sentiments = self.get_topic_sentiments()
         # preparing data
         # most common nouns
-        df_nouns = pd.DataFrame(most_common_nouns, columns=['Words', 'Number'])
+        df_nouns = pd.DataFrame(most_common_names, columns=['Names', 'Number'])
         # percentage by topic
         cat_headline_dict = {}
         for i in categorized_headlines:
             cat_headline_dict[i] = len(categorized_headlines[i])
         df_cat_headline = pd.DataFrame(list(cat_headline_dict.items()), columns=['Category', 'Numbers of headlines'])
-        df_cat_headline['Numbers of headlines'] = df_cat_headline['Numbers of headlines'] / df_cat_headline['Numbers of headlines'].sum()
+        df_cat_headline['Numbers of headlines'] \
+            = df_cat_headline['Numbers of headlines'] / df_cat_headline['Numbers of headlines'].sum()
         # create subplot
         fig, axs = plt.subplots(nrows=3, ncols=1, figsize=(10, 8))
         # plot most common nouns
-        axs[0].bar(df_nouns['Words'], df_nouns['Number'])
+        axs[0].bar(df_nouns['Names'], df_nouns['Number'])
         axs[0].set_ylabel('Absolute numbers')
-        axs[0].set_title('Most common Nouns')
+        axs[0].set_title('Most common Names')
+        axs[0].tick_params(axis='x', rotation=45)
         # plot percentage by topic
         axs[1].bar(df_cat_headline['Category'], df_cat_headline['Numbers of headlines'])
         axs[1].set_ylabel('Percentage by Topic')
         axs[1].set_title('Categorized Headlines')
+        axs[1].tick_params(axis='x', rotation=45)
         # plot sentiment by topic
         axs[2].boxplot(topic_sentiments.values())
         axs[2].set_xticklabels(topic_sentiments.keys())
         axs[2].set_ylabel('Sentiment [-1, 1]')
         axs[2].set_title('Sentiment Analysis by Topic')
+        axs[2].tick_params(axis='x', rotation=45)
 
         plt.tight_layout()
         plt.savefig('headline_analysis.png')
@@ -81,10 +86,10 @@ class HeadlineAnalyser:
         plt.close()
 
 if __name__ == "__main__":
-    test_headlines = scraper.NewsScraper('https://www.bbc.com', ['h3']).scraper()
-    test_headlines += scraper.NewsScraper('https://www.nytimes.com', ['h3']).scraper()
-    test_headlines += scraper.NewsScraper('https://www.latimes.com',  ['h2', 'h3']).scraper()
 
+    test_scraper = scraper.NewsScraper(['h2', 'h3'])
+    test_headlines = test_scraper.scraper()
     analyser = HeadlineAnalyser(test_headlines)
     analyser.get_visualization()
+    print(analyser.get_most_common_persons())
 
