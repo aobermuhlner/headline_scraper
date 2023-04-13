@@ -10,20 +10,22 @@ import re
 class NewsScraper:
 
     def __init__(self, html_tags: list):
-        self.url = ['https://www.bbc.com', 'https://www.nytimes.com', 'https://www.latimes.com']
+        self.url = ['https://www.bbc.com', 'https://www.nytimes.com', 'https://www.latimes.com',
+                    'https://www.washingtonpost.com', 'https://www.nbcnews.com', 'https://www.huffpost.com']
         self.html_tags = html_tags
         self.headline_list = []
 
     def add_url(self, url: str):
         self.url.append(url)
-        self.clean_cache()
+        self.clear_cache()
 
     def scraper(self):
 
         with open('cache.json', "r") as file:
             cache_data = json.load(file)
 
-        if (dt.datetime.today().date() - dt.datetime.strptime(cache_data['date'], "%Y-%m-%d").date()) > dt.timedelta(days=0):
+        if (dt.datetime.today().date() - dt.datetime.strptime(cache_data['date'],
+                                                              "%Y-%m-%d").date()) > dt.timedelta(days=0):
             for i in self.url:
                 data = urllib.request.urlopen(i).read()
                 soup = BeautifulSoup(data, "html.parser")
@@ -49,19 +51,20 @@ class NewsScraper:
         return True
 
     @staticmethod
-    def clean_cache():
+    def clear_cache():
         with open('cache.json', "w") as file:
             cache_data = {'date': dt.date(year=1, month=1, day=1).strftime('%Y-%m-%d'),
                           'headlines': []}
             json.dump(cache_data, file)
         return True
 
+
 if __name__ == "__main__":
 
     test_scraper = NewsScraper(['h3'])
-    test_scraper.add_url('https://www.washingtonpost.com')
+    test_scraper.clear_cache()
+    test_scraper.add_url('https://www.usatoday.com')
     headlines = test_scraper.scraper()
 
     for i in headlines:
         print(i)
-

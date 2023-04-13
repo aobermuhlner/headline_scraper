@@ -22,7 +22,7 @@ class HeadlineAnalyser:
         for text in self.headlines:
             doc = self.nlp_en(text)
             person_names = [ent.text.lower() for ent in doc.ents if ent.label_ == 'PERSON']
-            full_names = [name.replace("'s", "").title() for name in person_names if len(name.split()) == 2]
+            full_names = [name.replace("'s", "").title() for name in person_names]
             persons.update(full_names)
         return persons.most_common(n)
 
@@ -53,7 +53,7 @@ class HeadlineAnalyser:
         topic_sentiments = self.get_topic_sentiments()
         # preparing data
         # most common nouns
-        df_nouns = pd.DataFrame(most_common_names, columns=['Names', 'Number'])
+        df_names = pd.DataFrame(most_common_names, columns=['Names', 'Number'])
         # percentage by topic
         cat_headline_dict = {}
         for i in categorized_headlines:
@@ -64,7 +64,7 @@ class HeadlineAnalyser:
         # create subplot
         fig, axs = plt.subplots(nrows=3, ncols=1, figsize=(10, 8))
         # plot most common nouns
-        axs[0].bar(df_nouns['Names'], df_nouns['Number'])
+        axs[0].bar(df_names['Names'], df_names['Number'])
         axs[0].set_ylabel('Absolute numbers')
         axs[0].set_title('Most common Names')
         axs[0].tick_params(axis='x', rotation=45)
@@ -72,14 +72,12 @@ class HeadlineAnalyser:
         axs[1].bar(df_cat_headline['Category'], df_cat_headline['Numbers of headlines'])
         axs[1].set_ylabel('Percentage by Topic')
         axs[1].set_title('Categorized Headlines')
-        axs[1].tick_params(axis='x', rotation=45)
         # plot sentiment by topic
         axs[2].boxplot(topic_sentiments.values())
         axs[2].set_xticklabels(topic_sentiments.keys())
         axs[2].set_ylabel('Sentiment [-1, 1]')
         axs[2].set_title('Sentiment Analysis by Topic')
-        axs[2].tick_params(axis='x', rotation=45)
-
+        # save and show plot
         plt.tight_layout()
         plt.savefig('headline_analysis.png')
         plt.show()
@@ -88,6 +86,7 @@ class HeadlineAnalyser:
 if __name__ == "__main__":
 
     test_scraper = scraper.NewsScraper(['h2', 'h3'])
+    test_scraper.clear_cache()
     test_headlines = test_scraper.scraper()
     analyser = HeadlineAnalyser(test_headlines)
     analyser.get_visualization()
