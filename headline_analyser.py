@@ -90,5 +90,4 @@ if __name__ == "__main__":
     test_headlines = test_scraper.scraper()
     analyser = HeadlineAnalyser(test_headlines)
     analyser.get_visualization()
-    print(analyser.get_most_common_persons())
 
