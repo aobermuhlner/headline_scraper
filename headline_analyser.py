@@ -76,7 +76,9 @@ class HeadlineAnalyser:
         axs[2].set_title('Sentiment Analysis by Topic')
 
         plt.tight_layout()
+        plt.savefig('headline_analysis.png')
         plt.show()
+        plt.close()
 
 if __name__ == "__main__":
     test_headlines = scraper.NewsScraper('https://www.bbc.com', ['h3']).scraper()
