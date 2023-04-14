@@ -1,11 +1,24 @@
+__author__ = "Adrian Obermühlner", "Linus Stuhlmann"
+
 import urllib.request
 from bs4 import BeautifulSoup
 import json
 import datetime as dt
 import re
 
-
 class NewsScraper:
+
+    """
+    Die Klasse NewsScraper ist ein Python-Programm,
+    das Schlagzeilen von verschiedenen Nachrichtenquellen sammelt
+    und zurückgibt. Die Klasse verwendet das Modul urllib zum
+    Abrufen der HTML-Seiten der Nachrichtenquellen und das
+    Modul BeautifulSoup zum Parsen des HTML-Codes
+    und zum Extrahieren der Schlagzeilen.
+    Die Methode add_url ermöglicht es, eine weitere Nachrichtenquelle
+    zur Liste der URLs hinzuzufügen, und die Methode clear_cache ermöglicht es,
+    den Cache zu leeren.
+    """
 
     def __init__(self, html_tags: list):
         self.url = ['https://www.bbc.com', 'https://www.nytimes.com', 'https://www.latimes.com',

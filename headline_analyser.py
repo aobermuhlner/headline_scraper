@@ -1,3 +1,5 @@
+__author__ = "Adrian Obermühlner", "Linus Stuhlmann"
+
 import spacy
 import scraper
 import difflib
@@ -8,6 +10,17 @@ from textblob import TextBlob
 
 
 class HeadlineAnalyser:
+
+    """
+    Die Klasse HeadlineAnalyser dient dazu, eine Liste von Schlagzeilen
+    aus Nachrichten zu analysieren und visuell darzustellen.
+    Um dies zu erreichen, verwendet die Klasse verschiedene
+    Bibliotheken wie Spacy, TextBlob, Pandas, Matplotlib und Difflib,
+    um verschiedene Aspekte der Schlagzeilen zu analysieren,
+    wie zum Beispiel die häufigsten Personen,
+    die Themenkategorien und die Sentiment-Analyse der Schlagzeilen.
+    """
+
     def __init__(self, headlines: list):
         self.headlines = headlines
         self.nlp_en = spacy.load('en_core_web_sm')
