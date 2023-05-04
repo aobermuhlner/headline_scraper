@@ -65,12 +65,10 @@ class NewsScraper:
 
 if __name__ == "__main__":
 
-    test_scraper = NewsScraper(['h2'])
+    test_scraper = NewsScraper(['h3'])
     test_scraper.clear_cache()
-    test_scraper.add_url('https://www.nzz.ch')
+    test_scraper.add_url('https://www.thetimes.co.uk')
     headlines = test_scraper.scraper()
 
     for i in headlines:
         print(i)
-
-    print(len(headlines))
