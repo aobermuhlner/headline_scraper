@@ -11,21 +11,12 @@ from textblob import TextBlob
 
 class HeadlineAnalyser:
 
-    """
-    Die Klasse HeadlineAnalyser dient dazu, eine Liste von Schlagzeilen
-    aus Nachrichten zu analysieren und visuell darzustellen.
-    Um dies zu erreichen, verwendet die Klasse verschiedene
-    Bibliotheken wie Spacy, TextBlob, Pandas, Matplotlib und Difflib,
-    um verschiedene Aspekte der Schlagzeilen zu analysieren,
-    wie zum Beispiel die häufigsten Personen,
-    die Themenkategorien und die Sentiment-Analyse der Schlagzeilen.
-    """
-
     def __init__(self, headlines: list):
         self.headlines = headlines
         self.nlp_en = spacy.load('en_core_web_sm')
         self.topics = ["Politics", "Business", "Sports", "Culture", "Science", "Tech", "Health", "Lifestyle"]
 
+    # Linus Stuhlmann
     def get_most_common_persons(self, n=10):
         persons = Counter()
         for text in self.headlines:
@@ -35,6 +26,7 @@ class HeadlineAnalyser:
             persons.update(full_names)
         return persons.most_common(n)
 
+    # Linus Stuhlmann
     def get_categorized_headlines(self):
         categorized_headlines = {topic: [] for topic in self.topics}
 
@@ -46,6 +38,7 @@ class HeadlineAnalyser:
 
         return categorized_headlines
 
+    # Adrian Obermühlner
     def get_topic_sentiments(self):
         topic_sentiments = {}
         for topic, headlines in self.get_categorized_headlines().items():
@@ -56,6 +49,7 @@ class HeadlineAnalyser:
             topic_sentiments[topic] = sentiment_scores
         return topic_sentiments
 
+    # Adrian Obermühlner
     def get_visualization(self):
         most_common_names = self.get_most_common_persons()
         categorized_headlines = self.get_categorized_headlines()
@@ -88,9 +82,9 @@ class HeadlineAnalyser:
         axs[2].set_title('Sentiment Analysis by Topic')
         # save and show plot
         plt.tight_layout()
-        plt.savefig('headline_analysis.png')
         plt.show()
         plt.close()
+
 
 if __name__ == "__main__":
 
@@ -98,4 +92,3 @@ if __name__ == "__main__":
     test_headlines = test_scraper.scraper()
     analyser = HeadlineAnalyser(test_headlines)
     analyser.get_visualization()
-

@@ -6,23 +6,12 @@ import json
 import datetime as dt
 import re
 
+
 class NewsScraper:
 
-    """
-    Die Klasse NewsScraper ist ein Python-Programm,
-    das Schlagzeilen von verschiedenen Nachrichtenquellen sammelt
-    und zurückgibt. Die Klasse verwendet das Modul urllib zum
-    Abrufen der HTML-Seiten der Nachrichtenquellen und das
-    Modul BeautifulSoup zum Parsen des HTML-Codes
-    und zum Extrahieren der Schlagzeilen.
-    Die Methode add_url ermöglicht es, eine weitere Nachrichtenquelle
-    zur Liste der URLs hinzuzufügen, und die Methode clear_cache ermöglicht es,
-    den Cache zu leeren.
-    """
-
+    # Linus Stuhlmann
     def __init__(self, html_tags: list):
-        self.url = ['https://www.bbc.com', 'https://www.nytimes.com', 'https://www.latimes.com',
-                    'https://www.washingtonpost.com', 'https://www.nbcnews.com', 'https://www.huffpost.com']
+        self.url = []
         self.html_tags = html_tags
         self.headline_list = []
 
@@ -30,13 +19,14 @@ class NewsScraper:
         self.url.append(url)
         self.clear_cache()
 
+
     def scraper(self):
 
         with open('cache.json', "r") as file:
             cache_data = json.load(file)
 
-        if (dt.datetime.today().date() - dt.datetime.strptime(cache_data['date'],
-                                                              "%Y-%m-%d").date()) > dt.timedelta(days=0):
+        if (dt.datetime.today() - dt.datetime.strptime(cache_data['date'],
+                                                       "%Y-%m-%d %H:%M:%S")) > dt.timedelta(minutes=10):
             for i in self.url:
                 data = urllib.request.urlopen(i).read()
                 soup = BeautifulSoup(data, "html.parser")
@@ -47,35 +37,40 @@ class NewsScraper:
                     if len(headline_text.split()) > 1:
                         self.headline_list.append(re.sub(r'[-_<>›]', '', headline_text))
             self.cache(self.headline_list)
+            print('--> Daten aus Internet bezogen')
         else:
+            print('--> Daten aus Cache bezogen')
             self.headline_list = cache_data['headlines']
 
         return self.headline_list
 
-    def cache(self, headlines):
+    @staticmethod
+    def cache(headlines):
         cache_data = {
-            'date': dt.datetime.today().strftime('%Y-%m-%d'),
+            'date': dt.datetime.today().strftime("%Y-%m-%d %H:%M:%S"),
             'headlines': headlines
         }
         with open('cache.json', "w") as file:
             json.dump(cache_data, file)
         return True
 
+    # Linus Stuhlmann
     @staticmethod
     def clear_cache():
         with open('cache.json', "w") as file:
-            cache_data = {'date': dt.date(year=1, month=1, day=1).strftime('%Y-%m-%d'),
+            cache_data = {'date': dt.datetime(year=1, month=1, day=1).strftime("%Y-%m-%d %H:%M:%S"),
                           'headlines': []}
             json.dump(cache_data, file)
         return True
 
-
 if __name__ == "__main__":
 
-    test_scraper = NewsScraper(['h3'])
+    test_scraper = NewsScraper(['h2'])
     test_scraper.clear_cache()
-    test_scraper.add_url('https://www.usatoday.com')
+    test_scraper.add_url('https://www.nzz.ch')
     headlines = test_scraper.scraper()
 
     for i in headlines:
         print(i)
+
+    print(len(headlines))
