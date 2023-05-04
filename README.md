@@ -2,7 +2,8 @@
 need to install following packages first
 
 ## scraper class
-- pip install bs4
+- pip install beautifulsoup4
+- pip install requests
 
 ## headline analysis class
 - pip install spacy
