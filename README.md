@@ -1,4 +1,4 @@
-# headline_analysis
+# headline_scraper
 need to install following packages first
 
 ## scraper class
